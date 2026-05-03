@@ -1,9 +1,11 @@
+import threading
 import click
 import webbrowser
 import secrets
 import os
 from dotenv import load_dotenv
 from utils.pkce import generate_pkce
+from flask import Flask, request
 
 load_dotenv()
 
@@ -13,7 +15,7 @@ BACKEND_URL = os.getenv("BACKEND_URL")
 @click.group()
 def cli():
     pass
-
+# Command to initiate the login process
 @cli.command()
 def login():
     print("Starting login...")
@@ -34,3 +36,21 @@ def login():
     print("Opened browser for authentication")
 if __name__ == "__main__":
     cli()
+
+app = Flask(__name__)
+# This route will handle the callback from GitHub after authentication
+@app.route("/callback")
+def callback():
+    code = request.args.get("code")
+    returned_state = request.args.get("state")
+
+    print("Received callback")
+    print("Code:", code)
+
+    return "Login successful. You can close this window."
+
+# Start the Flask server in a separate thread to handle the callback
+def run_server():
+    app.run(port=8000)
+
+threading.Thread(target=run_server).start()
