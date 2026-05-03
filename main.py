@@ -7,6 +7,7 @@ import os
 from dotenv import load_dotenv
 from utils.pkce import generate_pkce
 from flask import Flask, request
+from utils.storage import save_tokens
 
 load_dotenv()
 
@@ -45,7 +46,6 @@ def callback():
     code = request.args.get("code")
     state = request.args.get("state")
     code_verifier = request.args.get("code_verifier")
-    # returned_state = request.args.get("state")
 
     response = requests.post(
         f"{BACKEND_URL}/auth/github/callback",
@@ -57,13 +57,14 @@ def callback():
     )
 
     data = response.json()
-    
+
+    save_tokens(data)
 
     print("Received callback")
     print("Code:", code)
 
     print("Logged in as:", data.get("username"))
-
+    
     return "Login successful. You can close this window."
 
 # Start the Flask server in a separate thread to handle the callback
