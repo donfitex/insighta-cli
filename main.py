@@ -2,6 +2,7 @@ import threading
 import click
 import webbrowser
 import secrets
+import requests
 import os
 from dotenv import load_dotenv
 from utils.pkce import generate_pkce
@@ -42,10 +43,26 @@ app = Flask(__name__)
 @app.route("/callback")
 def callback():
     code = request.args.get("code")
-    returned_state = request.args.get("state")
+    state = request.args.get("state")
+    code_verifier = request.args.get("code_verifier")
+    # returned_state = request.args.get("state")
+
+    response = requests.post(
+        f"{BACKEND_URL}/auth/github/callback",
+        json={
+            "code": code,
+            "code_verifier": code_verifier,
+            "state": state
+        }
+    )
+
+    data = response.json()
+    
 
     print("Received callback")
     print("Code:", code)
+
+    print("Logged in as:", data.get("username"))
 
     return "Login successful. You can close this window."
 
