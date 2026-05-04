@@ -5,9 +5,9 @@ import secrets
 import requests
 import os
 from dotenv import load_dotenv
-from utils.pkce import generate_pkce
+from insighta.utils.pkce import generate_pkce
 from flask import Flask, request
-from utils.storage import save_tokens
+from insighta.utils.storage import save_tokens
 
 load_dotenv()
 
@@ -18,7 +18,10 @@ BACKEND_URL = os.getenv("BACKEND_URL")
 def cli():
     pass
 # Command to initiate the login process
-@cli.command()
+@cli.command(name="login")
+def login_cmd():
+    login()
+
 def login():
     print("Starting login...")
     state = secrets.token_urlsafe(16)
