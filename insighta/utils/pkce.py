@@ -4,7 +4,7 @@ import base64
 
 def generate_pkce():
     # code_verifier (secret)
-    code_verifier = secrets.token_urlsafe(64)
+    code_verifier = secrets.token_urlsafe(96)
 
     # code_challenge (hashed)
     code_challenge = base64.urlsafe_b64encode(
