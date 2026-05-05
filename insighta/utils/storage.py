@@ -13,5 +13,5 @@ def load_tokens():
     if not os.path.exists(PATH):
         return None
 
-    with open(PATH) as f:
+    with open(PATH, "r") as f:
         return json.load(f)
