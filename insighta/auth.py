@@ -7,9 +7,9 @@ from insighta.utils.pkce import generate_pkce
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import urllib.parse
 import secrets
-import hashlib
-import base64
 import threading
+
+from .utils.storage import load_tokens, save_tokens
 
 load_dotenv()
 
@@ -136,3 +136,31 @@ def login():
     username = token_data["user"]["username"]
 
     print(f"✅ Logged in as @{username}")
+
+
+# -------------------------
+# REFRESH TOKEN 
+# -------------------------
+def refresh_access_token():
+    tokens = load_tokens()
+
+    if not tokens:
+        print("❌ Not logged in")
+        return None
+
+    refresh_token = tokens.get("refresh_token")
+
+    response = requests.post(
+        f"{BACKEND_URL}/auth/refresh",
+        json={"refresh_token": refresh_token}
+    )
+
+    if response.status_code != 200:
+        print("❌ Session expired. Please login again.")
+        return None
+
+    new_tokens = response.json()
+
+    save_tokens(new_tokens)
+
+    return new_tokens
