@@ -189,3 +189,24 @@ def logout():
         print("✅ Logged out successfully")
     else:
         print("⚠️ Logged out locally (server session may already be invalid)")
+
+# -------------------------
+# WHOAMI
+# -------------------------
+def whoami():
+    tokens = load_tokens()
+
+    if not tokens:
+        print("❌ Not logged in")
+        return
+
+    user = tokens.get("user")
+
+    if not user:
+        print("⚠️ No user info found")
+        return
+
+    print("\n👤 Current User:")
+    print(f"Username: @{user.get('username')}")
+    print(f"Role: {user.get('role')}")
+    print(f"User ID: {user.get('id')}")
