@@ -1,5 +1,5 @@
 import click
-from insighta.auth import login
+from insighta.auth import login, logout
 from insighta.profiles.commands import profiles
 
 # -------------------------
@@ -26,3 +26,10 @@ cli.add_command(profiles)
 # -------------------------
 if __name__ == "__main__":
     cli()
+
+# -------------------------
+# LOGOUT COMMAND
+# -------------------------
+@cli.command()
+def logout_cmd():
+    logout()

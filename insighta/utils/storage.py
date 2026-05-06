@@ -17,3 +17,7 @@ def load_tokens():
 
     with open(PATH, "r") as f:
         return json.load(f)
+    
+def clear_tokens():
+    if os.path.exists(PATH):
+        os.remove(PATH)

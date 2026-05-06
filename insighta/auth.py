@@ -9,7 +9,7 @@ import urllib.parse
 import secrets
 import threading
 
-from .utils.storage import load_tokens, save_tokens
+from .utils.storage import load_tokens, save_tokens, clear_tokens
 
 load_dotenv()
 
@@ -164,3 +164,28 @@ def refresh_access_token():
     save_tokens(new_tokens)
 
     return new_tokens
+
+# -------------------------
+# LOGOUT 
+# -------------------------
+def logout():
+    tokens = load_tokens()
+
+    if not tokens:
+        print("❌ Not logged in")
+        return
+
+    refresh_token = tokens.get("refresh_token")
+
+    response = requests.post(
+        f"{BACKEND_URL}/auth/logout",
+        json={"refresh_token": refresh_token}
+    )
+
+    # Always clear locally (important)
+    clear_tokens()
+
+    if response.status_code == 200:
+        print("✅ Logged out successfully")
+    else:
+        print("⚠️ Logged out locally (server session may already be invalid)")
