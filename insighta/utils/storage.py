@@ -1,10 +1,12 @@
 import json
 import os
+import time
 
 PATH = os.path.expanduser("~/.insighta/credentials.json")
 
 def save_tokens(data):
     os.makedirs(os.path.dirname(PATH), exist_ok=True)
+    data["_saved_at"] = int(time.time())
 
     with open(PATH, "w") as f:
         json.dump(data, f)
